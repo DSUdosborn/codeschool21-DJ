@@ -1,0 +1,23 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 50px;
+}
+
+#board {
+  user-select: none;
+  width: 320px;
+}
+
+.tile {
+  border: 1px solid #ccc;
+  cursor: pointer;
+  float: left;
+  font-size: 65px;
+  height: 100px;
+  line-height: 100px;
+  margin: 2px;
+  text-align: center;
+  width: 100px;
+}
+

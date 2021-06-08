@@ -21,3 +21,12 @@ body {
   width: 100px;
 }
 
+.x {
+  background-color: #CCEEEE;
+  color: #00CCCC;
+}
+
+.o {
+  background-color: #EECCEE;
+  color: #CC00CC;
+}

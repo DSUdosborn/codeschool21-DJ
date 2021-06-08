@@ -1,0 +1,30 @@
+data
+- structure: object (dictionary): key is position, value is game number
+
+board
+- structure: DOM & DATA
+- tiles with both values and colors
+- empty tiles
+- styling
+
+new game
+- generate two new tiles
+
+moves
+- keyboard presses
+- generate one new tile on move: empty spaces only
+- probability of 2 vs 4?
+
+game logic
+- combining & moving tiles
+- four directions
+- simple cases
+- complex cases
+- empty tiles?
+- game over--board full, no moves
+
+score
+- current
+- best
+- calculate?
+- leaderboard

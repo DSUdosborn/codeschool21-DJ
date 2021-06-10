@@ -1,7 +1,7 @@
 var boardData = {};
-//boardData["row2col0"] = 8;
-//boardData["row3col2"] = 4;
-//boardData["row3col0"] = 2;
+var boardSize = 5;
+
+var currentScore = 0;
 
 function tileKey(row, col) {
   return "row" + row + "col" + col;
@@ -10,13 +10,13 @@ function tileKey(row, col) {
 function createBoard() {
   var boardDiv = document.querySelector("#board");
 
-  // for i in range(4)
-  for (var row = 0; row < 4; row += 1) {
+  // for i in range(boardSize)
+  for (var row = 0; row < boardSize; row += 1) {
     var rowDiv = document.createElement("div");
     rowDiv.classList.add("row");
     boardDiv.appendChild(rowDiv);
 
-    for (var col = 0; col < 4; col += 1) {
+    for (var col = 0; col < boardSize; col += 1) {
       // create new tile divs
       var key = tileKey(row, col);
       var tileDiv = document.createElement("div");
@@ -28,8 +28,8 @@ function createBoard() {
 }
 
 function updateBoard() {
-  for (var row = 0; row < 4; row += 1) {
-    for (var col = 0; col < 4; col += 1) {
+  for (var row = 0; row < boardSize; row += 1) {
+    for (var col = 0; col < boardSize; col += 1) {
       var key = tileKey(row, col);
       var value = boardData[key];
 
@@ -43,13 +43,16 @@ function updateBoard() {
       }
     }
   }
+
+  var currentScoreSpan = document.querySelector("#current-score");
+  currentScoreSpan.innerHTML = currentScore;
 }
 
 function getEmptyTiles() {
   var emptyTiles = [];
 
-  for (var row = 0; row < 4; row += 1) {
-    for (var col = 0; col < 4; col += 1) {
+  for (var row = 0; row < boardSize; row += 1) {
+    for (var col = 0; col < boardSize; col += 1) {
       var key = tileKey(row, col);
       var value = boardData[key];
 
@@ -93,6 +96,8 @@ function combineTiles(numbers) {
       newNumbers.push(sum);
       // remove both from input list
       numbers.splice(0, 2);
+      // add to the current score
+      currentScore += sum;
     } else { // if next two numbers don't match
       // add first number to new list
       newNumbers.push(numbers[0]);
@@ -102,7 +107,7 @@ function combineTiles(numbers) {
   }
 
   // restore blanks (pad end of newNumbers)
-  while (newNumbers.length < 4) {
+  while (newNumbers.length < boardSize) {
     newNumbers.push(undefined);
   }
 
@@ -112,7 +117,7 @@ function combineTiles(numbers) {
 function getNumbersInRow(row) {
   var numbers = [];
 
-  for (var col = 0; col < 4; col += 1) {
+  for (var col = 0; col < boardSize; col += 1) {
     var key = tileKey(row, col);
     var value = boardData[key];
     if (value) { // SKIP BLANKS!
@@ -126,7 +131,7 @@ function getNumbersInRow(row) {
 function getNumbersInCol(col) {
   var numbers = [];
 
-  for (var row = 0; row < 4; row += 1) {
+  for (var row = 0; row < boardSize; row += 1) {
     var key = tileKey(row, col);
     var value = boardData[key];
     if (value) { // SKIP BLANKS!
@@ -138,7 +143,7 @@ function getNumbersInCol(col) {
 }
 
 function setNumbersInRow(row, newNumbers) {
-  for (var col = 0; col < 4; col += 1) {
+  for (var col = 0; col < boardSize; col += 1) {
     var key = tileKey(row, col);
     var value = newNumbers[col];
     boardData[key] = value;
@@ -146,7 +151,7 @@ function setNumbersInRow(row, newNumbers) {
 }
 
 function setNumbersInCol(col, newNumbers) {
-  for (var row = 0; row < 4; row += 1) {
+  for (var row = 0; row < boardSize; row += 1) {
     var key = tileKey(row, col);
     var value = newNumbers[row];
     boardData[key] = value;
@@ -184,8 +189,8 @@ function combineColDown(col) {
 function didBoardChange(oldBoard) {
   var changed = false;
 
-  for (var row = 0; row < 4; row += 1) {
-    for (var col = 0; col < 4; col += 1) {
+  for (var row = 0; row < boardSize; row += 1) {
+    for (var col = 0; col < boardSize; col += 1) {
       var key = tileKey(row, col);
       if (oldBoard[key] != boardData[key]) {
         changed = true;
@@ -200,7 +205,7 @@ function combineDirection(direction) {
   // make a deep copy of the board data
   var oldBoard = Object.assign({}, boardData);
 
-  for (var i = 0; i < 4; i++) {
+  for (var i = 0; i < boardSize; i++) {
     if (direction == "left") {
       combineRowLeft(i);
     } else if (direction == "up") {
@@ -219,9 +224,7 @@ function combineDirection(direction) {
 }
 
 document.onkeydown = function (event) {
-  // detect a key press (down, not up)
-  console.log("Key down detected!", event.which);
-
+  // detect a key press (key down, not up)
   if (event.which == 37) {
     combineDirection("left");
   } else if (event.which == 38) {
@@ -233,7 +236,28 @@ document.onkeydown = function (event) {
   }
 };
 
+function startNewGame() {
+  boardData = {};
+  currentScore = 0;
+  generateRandomTile();
+  generateRandomTile();
+  updateBoard();
+}
+
+var newGameButton = document.querySelector("#new-game");
+newGameButton.onclick = function () {
+  startNewGame();
+};
+
+var getScoresButton = document.querySelector("#get-scores");
+getScoresButton.onclick = function () {
+  console.log("get high scores");
+};
+
+var submitScoreButton = document.querySelector("#submit-score");
+submitScoreButton.onclick = function () {
+  console.log("submit score");
+};
+
 createBoard();
-generateRandomTile();
-generateRandomTile();
-updateBoard();
+startNewGame();

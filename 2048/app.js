@@ -1,5 +1,4 @@
 var boardData = {};
-
 //boardData["row2col0"] = 8;
 //boardData["row3col2"] = 4;
 //boardData["row3col0"] = 2;
@@ -182,7 +181,25 @@ function combineColDown(col) {
   setNumbersInCol(col, newNumbers);
 }
 
+function didBoardChange(oldBoard) {
+  var changed = false;
+
+  for (var row = 0; row < 4; row += 1) {
+    for (var col = 0; col < 4; col += 1) {
+      var key = tileKey(row, col);
+      if (oldBoard[key] != boardData[key]) {
+        changed = true;
+      }
+    }
+  }
+
+  return changed;
+}
+
 function combineDirection(direction) {
+  // make a deep copy of the board data
+  var oldBoard = Object.assign({}, boardData);
+
   for (var i = 0; i < 4; i++) {
     if (direction == "left") {
       combineRowLeft(i);
@@ -194,19 +211,29 @@ function combineDirection(direction) {
       combineColDown(i);
     }
   }
+
+  if (didBoardChange(oldBoard)) {
+    generateRandomTile();
+    updateBoard();
+  }
 }
 
+document.onkeydown = function (event) {
+  // detect a key press (down, not up)
+  console.log("Key down detected!", event.which);
+
+  if (event.which == 37) {
+    combineDirection("left");
+  } else if (event.which == 38) {
+    combineDirection("up");
+  } else if (event.which == 39) {
+    combineDirection("right");
+  } else if (event.which == 40) {
+    combineDirection("down");
+  }
+};
+
 createBoard();
-generateRandomTile();
-generateRandomTile();
-generateRandomTile();
-generateRandomTile();
-generateRandomTile();
-generateRandomTile();
-generateRandomTile();
-generateRandomTile();
-generateRandomTile();
-generateRandomTile();
 generateRandomTile();
 generateRandomTile();
 updateBoard();

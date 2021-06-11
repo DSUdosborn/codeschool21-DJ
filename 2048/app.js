@@ -221,6 +221,8 @@ function combineDirection(direction) {
     generateRandomTile();
     updateBoard();
   }
+
+  saveGame();
 }
 
 document.onkeydown = function (event) {
@@ -235,6 +237,17 @@ document.onkeydown = function (event) {
     combineDirection("down");
   }
 };
+
+function saveGame() {
+  localStorage.setItem("currentScore", currentScore);
+  localStorage.setItem("boardData", JSON.stringify(boardData));
+}
+
+function loadGame() {
+  currentScore = parseInt(localStorage.getItem("currentScore"), 10);
+  boardData = JSON.parse(localStorage.getItem("boardData"));
+  updateBoard();
+}
 
 function startNewGame() {
   boardData = {};
@@ -295,4 +308,9 @@ submitScoreButton.onclick = function () {
 };
 
 createBoard();
-startNewGame();
+
+if (localStorage.getItem("currentScore")) {
+  loadGame();
+} else {
+  startNewGame();
+}

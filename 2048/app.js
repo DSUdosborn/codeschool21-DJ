@@ -251,12 +251,47 @@ newGameButton.onclick = function () {
 
 var getScoresButton = document.querySelector("#get-scores");
 getScoresButton.onclick = function () {
-  console.log("get high scores");
+  fetch("https://highscoreapi.herokuapp.com/scores").then(function (response) {
+    // this function runs in the FUTURE!
+
+    response.json().then(function (data) {
+      console.log("data from the server:", data);
+
+      var scoreList = document.querySelector("#high-scores");
+      scoreList.innerHTML = "";
+
+      // for score in data:
+      data.forEach(function (score) {
+        // create new DOM element
+        var scoreItem = document.createElement("li");
+        // assign content from score variable
+        scoreItem.innerHTML = score.name + ": " + score.score;
+        // append created DOM element to parent element
+        scoreList.appendChild(scoreItem);
+      });
+    });
+  });
 };
 
 var submitScoreButton = document.querySelector("#submit-score");
 submitScoreButton.onclick = function () {
-  console.log("submit score");
+  var name = prompt("Enter your initials:");
+  var data = {
+    "name": name,
+    "score": currentScore
+  };
+
+  fetch("https://highscoreapi.herokuapp.com/scores", {
+    // options for fetch
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }).then(function (response) {
+    // response handler function
+    console.log("Successfully submitted score to server.");
+  });
 };
 
 createBoard();
